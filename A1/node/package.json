@@ -1,0 +1,14 @@
+{
+  "name": "network-examples",
+  "version": "1.0.0",
+  "description": "Networking examples for COMP-445",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {},
+  "author": "ENCS",
+  "license": "MIT",
+  "dependencies": {
+    "yargs": "^17.7.2"
+  }
+}
