@@ -44,7 +44,7 @@ public class httpLibrary {
         try
         {
             uri= new URI(url);
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             System.out.println("Invalid URL! Please check the url and try again!");
             return;
         }
@@ -61,46 +61,44 @@ public class httpLibrary {
                     headerValue+=headerKey.get(i)+":"+headerVal.get(i)+"\n";
                 }
             }
+
             StringBuilder request=new StringBuilder();
             try{
                 PrintStream out = new PrintStream(socket.getOutputStream()); //for sending the data to the stream , we can easily write text with methods like println().
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); //for reading from the socket stream in order to easily read text with methods like readLine()
 
-                String r = "GET " + url + " HTTP/1.0 ";
+                String r = "GET " + uri.getPath()+"?"+uri.getQuery() + " HTTP/1.0";
                 request.append(r);
                 request.append("\n");
+
+                request.append("Host: "+host+"\n");
                 if(headerFlag) {
                     request.append(headerValue);
+                    request.append("User-Agent: Concordia-HTTP/1.0\n");
+
                 }
-                request.append("User-Agent: Concordia-HTTP/1.0\n");
                 out.println(request);
                 out.println();
                 String line=in.readLine();
+                String verboseData="";
+                while(!line.contains("Access-Control-Allow-Credentials")){
+                    verboseData+=line;
+                    verboseData+="\n";
+                    line=in.readLine();
+                }
+                verboseData+=line;
+                verboseData+="\n";
                 if(verboseFlag==true)
                 {
-                    while (line!=null)
-                    {
-                        line=in.readLine();
-                        System.out.println(line);
-                    }
+                    System.out.println(verboseData);
                 }
-                else
+                line=in.readLine();
+                while (line!=null)
                 {
-                    while (line!=null)
-                    {
-                        if (line.startsWith("{") && line != null) {
-                            if (line != null)
-                                System.out.println(line);
-                            while (!line.startsWith("}") && line != null) {
-                                line = in.readLine();
-                                if (line != null)
-                                    System.out.println(line);
-                            }
-                        }
-                        line = in.readLine();
-
-                    }
+                    System.out.println(line);
+                    line = in.readLine();
                 }
+
 
             }
             catch (Exception e)
@@ -242,8 +240,9 @@ public class httpLibrary {
                 request.append("Content-Length: "+contentlen +"\n");
                 if(headerFlag) {
                     request.append(headerValue);
+                    request.append("User-Agent: Concordia-HTTP/1.0\n");
                 }
-                request.append("User-Agent: Concordia-HTTP/1.0\n");
+
                 out.println(request);
                 if(dataFlag)
                 {
@@ -258,31 +257,50 @@ public class httpLibrary {
 
 
 
+//                String line=in.readLine();
+//                if(verboseFlag==true)
+//                {
+//                    while (line!=null)
+//                    {
+//                        line=in.readLine();
+//                        System.out.println(line);
+//                    }
+//                }
+//                else
+//                {
+//                    while (line!=null)
+//                    {
+//                        if (line.startsWith("{") && line != null) {
+//                            if (line != null)
+//                                System.out.println(line);
+//                            while (!line.startsWith("}") && line != null) {
+//                                line = in.readLine();
+//                                if (line != null)
+//                                    System.out.println(line);
+//                            }
+//                        }
+//                        line = in.readLine();
+//
+//                    }
+//                }
                 String line=in.readLine();
+                String verboseData="";
+                while(!line.contains("Access-Control-Allow-Credentials")){
+                    verboseData+=line;
+                    verboseData+="\n";
+                    line=in.readLine();
+                }
+                verboseData+=line;
+                verboseData+="\n";
                 if(verboseFlag==true)
                 {
-                    while (line!=null)
-                    {
-                        line=in.readLine();
-                        System.out.println(line);
-                    }
+                    System.out.println(verboseData);
                 }
-                else
+                line=in.readLine();
+                while (line!=null)
                 {
-                    while (line!=null)
-                    {
-                        if (line.startsWith("{") && line != null) {
-                            if (line != null)
-                                System.out.println(line);
-                            while (!line.startsWith("}") && line != null) {
-                                line = in.readLine();
-                                if (line != null)
-                                    System.out.println(line);
-                            }
-                        }
-                        line = in.readLine();
-
-                    }
+                    System.out.println(line);
+                    line = in.readLine();
                 }
 
             }

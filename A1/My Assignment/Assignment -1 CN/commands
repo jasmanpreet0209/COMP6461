@@ -1,9 +1,9 @@
-httpc get http://httpbin.org/get?course=networking&assignment=1
-httpc get -v http://httpbin.org/get?course=networking&assignment=1
+httpc get http://httpbin.org/status/418
+httpc get -v http://httpbin.org/status/418
 
-httpc get -v http://httpbin.org/get?course=networking&assignment=1 -o printFile.txt
+httpc get -v http://httpbin.org/status/418 -o printFile.txt
 
-httpc get -v -h ID1:40202779 -h ID2:40200503 http://httpbin.org/get?course=networking&assignment=1
+httpc get -v -h ID1:40202779 -h ID2:40200503 http://httpbin.org/status/418
 
 httpc get http://httpbin.org/get?course=networking&assignment=1
 httpc get -v http://httpbin.org/get?course=networking&assignment=1
@@ -20,7 +20,7 @@ httpc get http://webhook.site/ec5ab457-4b8f-4d1d-8484-fcc3a5d0c26d?q=hello%20wor
 
 
 //BASIC POST
-httpc post http://httpbin.org/get?course=networking&assignment=1
+httpc post http://httpbin.org/status/418
 
 //HEADER
 httpc post -h ID:1111 http://httpbin.org/post
@@ -30,13 +30,12 @@ httpc post -v -h ID:1111 http://httpbin.org/post
 
 //data using inline
 httpc post -v -d '{A1:402200}' http://httpbin.org/post
+httpc post -d '{A1:402200}' http://httpbin.org/post
 
 httpc post -v -h ID:1111 -d '{A1:402200}' http://httpbin.org/post
 
-httpc post -v -f Datafile.txt http://httpbin.org/post
-
 //data USING FILE
-httpc post -v -f Datafile.txt -o test.txt http://httpbin.org/post
+httpc post -v -f fileData.json -o test.txt http://httpbin.org/post
 
 //both together
 httpc post -d '{A1:402200}' -f fileData.json http://httpbin.org/post
@@ -49,3 +48,5 @@ httpc get -v -h Content-Type:text/html -h Keep-Alive:10 -h Accept-language:en ht
 2>
 httpc get -v -o printFile.txt http://httpbin.org/get?course=networking&assignment=1
 httpc post -f fileData.json -o printFile.txt http://httpbin.org/post
+
+
