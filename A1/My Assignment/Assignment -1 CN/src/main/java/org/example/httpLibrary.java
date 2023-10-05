@@ -12,6 +12,8 @@ public class httpLibrary {
     {
         boolean verboseFlag=false;
         boolean headerFlag=false;
+        boolean outputFlag=false;
+        String outputFileName="";
         String url = "";
         List<String> headerKey=new ArrayList<>();
         List<String> headerVal=new ArrayList<>();
@@ -32,6 +34,12 @@ public class httpLibrary {
 
                 url = arguments[i].replace("\'","");
                 System.out.println(url);
+            }
+            if(arguments[i].contains("-o"))
+            {
+                outputFlag=true;
+                outputFileName= arguments[i+1];
+                i++;
             }
 
         }
@@ -88,15 +96,38 @@ public class httpLibrary {
                 }
                 verboseData+=line;
                 verboseData+="\n";
+                StringBuilder outFileString= new StringBuilder();
                 if(verboseFlag==true)
                 {
-                    System.out.println(verboseData);
+                    if(outputFlag)
+                    {
+                        outFileString.append(verboseData+"\n");
+                    }
+                    else
+                        System.out.println(verboseData);
                 }
                 line=in.readLine();
-                while (line!=null)
+                if(outputFlag)
                 {
-                    System.out.println(line);
-                    line = in.readLine();
+                    while (line!=null)
+                    {
+                        outFileString.append(line+"\n");
+                        line = in.readLine();
+                    }
+                    try {
+                        printInfile(outFileString, outputFileName);
+                    }
+                    catch (IOException e)
+                    {
+                        System.out.println("Unable to write to file! Please check and try again!!");
+                        return;
+                    }
+                }
+                else {
+                    while (line != null) {
+                        System.out.println(line);
+                        line = in.readLine();
+                    }
                 }
 
 
@@ -116,8 +147,18 @@ public class httpLibrary {
 
 
     }
+
+    private void printInfile(StringBuilder outFileString, String outputFileName) throws IOException {
+        FileWriter fileWriter = new FileWriter(outputFileName);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+        bufferedWriter.write(outFileString.toString());
+        bufferedWriter.close();
+    }
+
     public void post(String[] arguments)
     {
+        boolean outputFlag=false;
+        String outputFileName="";
         boolean verboseFlag=false;
         boolean headerFlag=false;
         boolean dataFlag = false;
@@ -164,6 +205,12 @@ public class httpLibrary {
                 dataKeyValue+=temp;
                 contentlen=dataKeyValue.length();
                 dataKeyValue+="\n";
+            }
+            if(arguments[i].contains("-o"))
+            {
+                outputFlag=true;
+                outputFileName= arguments[i+1];
+                i++;
             }
             if(arguments[i].equals("-f"))
             {
@@ -292,15 +339,38 @@ public class httpLibrary {
                 }
                 verboseData+=line;
                 verboseData+="\n";
+                StringBuilder outFileString= new StringBuilder();
                 if(verboseFlag==true)
                 {
-                    System.out.println(verboseData);
+                    if(outputFlag)
+                    {
+                        outFileString.append(verboseData+"\n");
+                    }
+                    else
+                        System.out.println(verboseData);
                 }
                 line=in.readLine();
-                while (line!=null)
+                if(outputFlag)
                 {
-                    System.out.println(line);
-                    line = in.readLine();
+                    while (line!=null)
+                    {
+                        outFileString.append(line+"\n");
+                        line = in.readLine();
+                    }
+                    try {
+                        printInfile(outFileString, outputFileName);
+                    }
+                    catch (IOException e)
+                    {
+                        System.out.println("Unable to write to file! Please check and try again!!");
+                        return;
+                    }
+                }
+                else {
+                    while (line != null) {
+                        System.out.println(line);
+                        line = in.readLine();
+                    }
                 }
 
             }
