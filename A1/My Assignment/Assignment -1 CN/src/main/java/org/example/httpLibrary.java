@@ -33,7 +33,6 @@ public class httpLibrary {
             if(arguments[i].contains("http://")||arguments[i].contains("https://")) {
 
                 url = arguments[i].replace("\'","");
-                System.out.println(url);
             }
             if(arguments[i].contains("-o"))
             {
@@ -74,8 +73,13 @@ public class httpLibrary {
             try{
                 PrintStream out = new PrintStream(socket.getOutputStream()); //for sending the data to the stream , we can easily write text with methods like println().
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); //for reading from the socket stream in order to easily read text with methods like readLine()
-
-                String r = "GET " + uri.getPath()+"?"+uri.getQuery() + " HTTP/1.0";
+                String r;
+                if(uri.getPath()!=null &&uri.getQuery()!=null)
+                    r="GET " + uri.getPath()+"?"+uri.getQuery() + " HTTP/1.0";
+                else if (uri.getPath()==null)
+                    r="GET /?"+uri.getQuery() + " HTTP/1.0";
+                else
+                    r="GET "+ uri.getPath()+ " HTTP/1.0";
                 request.append(r);
                 request.append("\n");
 
@@ -83,19 +87,23 @@ public class httpLibrary {
                 if(headerFlag) {
                     request.append(headerValue);
                     request.append("User-Agent: Concordia-HTTP/1.0\n");
-
                 }
                 out.println(request);
                 out.println();
+
                 String line=in.readLine();
                 String verboseData="";
-                while(!line.contains("Access-Control-Allow-Credentials")){
+                if(line.contains("HTTP/1.1")) {
+                    while (!line.contains("Access-Control-Allow-Credentials")) {
+
+                        verboseData += line;
+                        verboseData += "\n";
+                        line = in.readLine();
+                    }
                     verboseData+=line;
                     verboseData+="\n";
-                    line=in.readLine();
                 }
-                verboseData+=line;
-                verboseData+="\n";
+
                 StringBuilder outFileString= new StringBuilder();
                 if(verboseFlag==true)
                 {
@@ -107,6 +115,7 @@ public class httpLibrary {
                         System.out.println(verboseData);
                 }
                 line=in.readLine();
+
                 if(outputFlag)
                 {
                     while (line!=null)
@@ -149,10 +158,11 @@ public class httpLibrary {
     }
 
     private void printInfile(StringBuilder outFileString, String outputFileName) throws IOException {
-        FileWriter fileWriter = new FileWriter(outputFileName);
+        FileWriter fileWriter = new FileWriter(outputFileName,true);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
         bufferedWriter.write(outFileString.toString());
         bufferedWriter.close();
+        System.out.println("Output added to file: "+outputFileName);
     }
 
     public void post(String[] arguments)
@@ -227,7 +237,6 @@ public class httpLibrary {
                     String inp;
                     while((inp = bufferedReader.readLine()) != null)
                     {
-                        System.out.println("input "+inp);
                         fileVal+=inp;
                         fileVal+="\n";
                     }
@@ -244,14 +253,13 @@ public class httpLibrary {
             if(arguments[i].contains("http://")||arguments[i].contains("https://")) {
 
                 url = arguments[i].replace("\'","");
-                System.out.println(url);
             }
 
         }
         if(url==null||url.length()==0)
         {
             System.out.println("Empty URL! Please check the url and try again!");
-            System.exit(0);
+            return;
         }
         URI uri = null;
         try
@@ -293,7 +301,6 @@ public class httpLibrary {
                 out.println(request);
                 if(dataFlag)
                 {
-                    System.out.println("datakeyval"+dataKeyValue);
                     out.println(dataKeyValue);
                 }
                 else if (fileFlag)
@@ -332,13 +339,16 @@ public class httpLibrary {
 //                }
                 String line=in.readLine();
                 String verboseData="";
-                while(!line.contains("Access-Control-Allow-Credentials")){
+                if(line.contains("HTTP/1.1")) {
+                    while (!line.contains("Access-Control-Allow-Credentials")) {
+
+                        verboseData += line;
+                        verboseData += "\n";
+                        line = in.readLine();
+                    }
                     verboseData+=line;
                     verboseData+="\n";
-                    line=in.readLine();
                 }
-                verboseData+=line;
-                verboseData+="\n";
                 StringBuilder outFileString= new StringBuilder();
                 if(verboseFlag==true)
                 {

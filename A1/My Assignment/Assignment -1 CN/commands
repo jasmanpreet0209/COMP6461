@@ -3,13 +3,14 @@ httpc get -v http://httpbin.org/status/418
 
 httpc get -v http://httpbin.org/status/418 -o printFile.txt
 
-httpc get -v -h ID1:40231120 -h ID2:40200503 http://httpbin.org/status/418
+httpc get -v -h ID1:40231120 -h Name:Jasman http://httpbin.org/status/418
 
 httpc get http://httpbin.org/get?course=networking&assignment=1
 httpc get -v http://httpbin.org/get?course=networking&assignment=1
 httpc get -v -o printFile.txt http://httpbin.org/get?course=networking&assignment=1
-httpc get -v -h ID1:40231120 -h ID2:40200503 http://httpbin.org/get?course=networking&assignment=1
+httpc get -v -h ID1:40231120 -h Name:Jasman  http://httpbin.org/get?course=networking&assignment=1
 
+httpc get -v -h ID1:40231120 -h Name:Jasman -o printfile.txt http://httpbin.org/get?course=networking&assignment=1
 
 
 httpc help
@@ -32,7 +33,7 @@ httpc post -v -h ID:1111 http://httpbin.org/post
 httpc post -v -d '{A1:40231120}' http://httpbin.org/post
 httpc post -d '{A1:40231120}' http://httpbin.org/post
 
-httpc post -v -h ID:1111 -d '{A1:40231120}' http://httpbin.org/post
+httpc post -v -h ID:1111 -d '{"A1:40231120"}' http://httpbin.org/post
 
 //data USING FILE
 httpc post -v -f datafile.txt -o postFile.txt http://httpbin.org/post

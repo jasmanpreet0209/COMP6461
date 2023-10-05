@@ -1,22 +1,20 @@
-HTTP/1.1 200 OK
-Date: Thu, 05 Oct 2023 04:36:30 GMT
-Content-Type: application/json
-Content-Length: 285
+HTTP/1.1 418 I'M A TEAPOT
+Date: Thu, 05 Oct 2023 18:22:02 GMT
+Content-Length: 135
 Connection: close
 Server: gunicorn/19.9.0
+x-more-info: http://tools.ietf.org/html/rfc2324
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Credentials: true
 
 
-{
-  "args": {
-    "assignment": "1", 
-    "course": "networking"
-  }, 
-  "headers": {
-    "Host": "httpbin.org", 
-    "X-Amzn-Trace-Id": "Root=1-651e3d4e-02cdb0da057bdb6a5c984a67"
-  }, 
-  "origin": "107.171.249.140", 
-  "url": "http://httpbin.org/get?course=networking&assignment=1"
-}
+
+    -=[ teapot ]=-
+
+       _...._
+     .'  _ _ `.
+    | ."` ^ `". _,
+    \_;`"---"`|//
+      |       ;/
+      \_     _/
+        `"""`
