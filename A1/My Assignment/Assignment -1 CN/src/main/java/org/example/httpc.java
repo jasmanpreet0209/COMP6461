@@ -1,7 +1,5 @@
 package org.example;
-
 import java.util.Scanner;
-
 public class httpc {
     public static void main(String[] args) {
         httpLibrary httplib=new httpLibrary();

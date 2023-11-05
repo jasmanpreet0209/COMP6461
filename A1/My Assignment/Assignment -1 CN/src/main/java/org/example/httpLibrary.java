@@ -86,8 +86,8 @@ public class httpLibrary {
                 request.append("Host: "+host+"\n");
                 if(headerFlag) {
                     request.append(headerValue);
-                    request.append("User-Agent: Concordia-HTTP/1.0\n");
                 }
+                request.append("User-Agent: Concordia-HTTP/1.0\n");
                 out.println(request);
                 out.println();
 
@@ -102,6 +102,7 @@ public class httpLibrary {
                     }
                     verboseData+=line;
                     verboseData+="\n";
+//                    System.out.println(verboseData);
                 }
 
                 StringBuilder outFileString= new StringBuilder();
@@ -124,7 +125,7 @@ public class httpLibrary {
                         line = in.readLine();
                     }
                     try {
-                        printInfile(outFileString, outputFileName);
+                        printOutputInFile(outFileString, outputFileName);
                     }
                     catch (IOException e)
                     {
@@ -136,6 +137,26 @@ public class httpLibrary {
                     while (line != null) {
                         System.out.println(line);
                         line = in.readLine();
+                    }
+                }
+                boolean redirectFlag=false;
+                String redirectUrl ;
+                for(int i=0;i<verboseData.split("\n").length;i++)
+                {
+                    String temp=verboseData.split("\n")[i];
+//                    System.out.println("jas "+ temp);
+                    if(temp.startsWith("HTTP/1.1") && (Integer.parseInt(temp.split(" ")[1])>=300 && Integer.parseInt(temp.split(" ")[1])<400))
+                    {
+                        redirectFlag=true;
+                    }
+                    if(redirectFlag && temp.startsWith("Location:"))
+                    {
+                         redirectUrl= temp.split(" ")[1];
+                         String newParameters="";
+
+                         newParameters+="-v -h Content-Type:text/html -h Keep-Alive:10 http://"+host+"/"+redirectUrl;
+                         get(newParameters.split(" "));
+                         return;
                     }
                 }
 
@@ -157,7 +178,7 @@ public class httpLibrary {
 
     }
 
-    private void printInfile(StringBuilder outFileString, String outputFileName) throws IOException {
+    private void printOutputInFile(StringBuilder outFileString, String outputFileName) throws IOException {
         FileWriter fileWriter = new FileWriter(outputFileName,true);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
         bufferedWriter.write(outFileString.toString());
@@ -295,8 +316,8 @@ public class httpLibrary {
                 request.append("Content-Length: "+contentlen +"\n");
                 if(headerFlag) {
                     request.append(headerValue);
-                    request.append("User-Agent: Concordia-HTTP/1.0\n");
                 }
+                request.append("User-Agent: Concordia-HTTP/1.0\n");
 
                 out.println(request);
                 if(dataFlag)
@@ -368,7 +389,7 @@ public class httpLibrary {
                         line = in.readLine();
                     }
                     try {
-                        printInfile(outFileString, outputFileName);
+                        printOutputInFile(outFileString, outputFileName);
                     }
                     catch (IOException e)
                     {
@@ -380,6 +401,39 @@ public class httpLibrary {
                     while (line != null) {
                         System.out.println(line);
                         line = in.readLine();
+                    }
+                }
+                boolean redirectFlag=false;
+                String redirectUrl ;
+                for(int i=0;i<verboseData.split("\n").length;i++)
+                {
+                    String temp=verboseData.split("\n")[i];
+                    if(temp.startsWith("HTTP/1.0") && (Integer.parseInt(temp.split(" ")[1])>=300 && Integer.parseInt(temp.split(" ")[1])<400))
+                    {
+                        redirectFlag=true;
+                    }
+                    if(redirectFlag && temp.startsWith("Location:"))
+                    {
+                        redirectUrl= temp.split(" ")[1];
+                        String newParameters="";
+                        newParameters+="-v -h Keep-Alive:10 http://"+host+"/"+redirectUrl;
+                        if(fileFlag)
+                        {
+                            newParameters+="-f "+filePath+" ";
+                        }
+                        else if(!fileFlag && dataFlag)
+                        {
+                            newParameters+="-d "+dataKeyValue+" ";
+
+                        }
+                        if(outputFlag)
+                        {
+                            newParameters+="-o "+outputFileName+" ";
+
+                        }
+
+                        post(newParameters.split(" "));
+
                     }
                 }
 
