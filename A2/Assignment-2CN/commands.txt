@@ -1,0 +1,32 @@
+Command to RUN :
+
+To run the server:-
+httpfs -v -p 8080
+
+httpfs -p 8080
+
+httpfs -v -p 8080 -d TestDirectory1
+
+httpfs -v -p 8080 -d D:\MACS\TestDirectory2
+
+To test the file transfer command:-
+
+httpfs get / http://localhost:8080/get/
+
+httpfs GET /data.txt http://localhost:8080/get/
+
+httpfs POST /postdata.txt http://localhost:8080/post/ -d {Assignment 2 : "Comp 6461"}
+
+
+To test the httpc commands:-
+
+httpc get -h Content-Type:application/json -h Testing-Header:TestHeader 'http://localhost:8080/get?course=networking&assignment=1'
+
+httpc post -h Content-Type:application/json -d '{"Assignment": 2, "Course": 6461}' 'http://localhost:8080/post?'
+
+httpc get -v -h Content-Type:application/json 'http://localhost:8080/get?course=networking&assignment=1'
+
+httpc post -v -h Content-Type:application/json -d '{"Assignment": 2, "Course": 6461 jasman}' 'http://localhost:8080/post?'
+
+
+
