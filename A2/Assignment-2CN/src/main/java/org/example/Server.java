@@ -26,7 +26,7 @@ public class Server {
     static String ConnectionAlive = "Connection: keep-alive";
     static boolean debugFlag=false,portFlag=false,dirFlag = false;
     private static ServerSocket serversocket=null;
-    static String dirPath="/Users/jasman/Desktop/Concordia/CN/Lab assignments/COMP6461/A2/Assignment-2CN";
+    static String dirPath="/Users/jasman/Desktop/Concordia/CN/LabAssignments/COMP6461/A2/Assignment-2CN";
     public static void runServer(ServerSocket serversocket) throws IOException, URISyntaxException {
 //        System.out.println("debug - Run server called");
         PrintWriter out=null;
@@ -152,22 +152,23 @@ public class Server {
                     body += "\t},\n";
                     if(jsonflag==true)
                     {
-                        body = body + "\t\"json\": {\n";
+                        body +="\t\"json\": {\n";
 
                         for (int i=0;i<inlineData.size();i++)
                         {
-                            body = body + "\t\t" + inlineData.get(i).replace("{","").replace("}","");
+                            body +="\t\t" + inlineData.get(i).replace("{","").replace("}","");
                             if(inlineData.size()>1 && i<inlineData.size()-1)
                             {
                                 body+=",\n";
                             }
                         }
-                        body = body + "\t},\n";
+                        body +="\t},\n";
                     }
                 }
-                body = body + "\t\"origin\": \"" + InetAddress.getLocalHost().getHostAddress() + "\",\n";
-                body = body + "\t\"url\": \"" + url + "\"\n";
-                body = body + "}\n";
+                body+="\t\"status\": \"" + OkStatusCode + "\"\n";
+                body +="\t\"origin\": \"" + InetAddress.getLocalHost().getHostAddress() + "\",\n";
+                body +="\t\"url\": \"" + url + "\"\n";
+                body +="}\n";
 
                 String response = body;
 
@@ -217,11 +218,11 @@ public class Server {
                 {
                     if(reqData[2].equals("/"))
                     {
-                        body = body + "\t\"files\": { ";
+                        body +="\t\"files\": { ";
 
                         if(filesInDir.size()==0)
                         {
-                            body = body + "},\n";
+                            body +="},\n";
                             code = NoFilesInDir;
                         }
                         else
@@ -234,7 +235,7 @@ public class Server {
                                     body+=" , ";
                                 }
                             }
-                            body = body + "},\n";
+                            body +="},\n";
                             code=OkStatusCode;
 
                         }
@@ -278,9 +279,10 @@ public class Server {
                     }
                     printOutputInFile(fileContent,reqData[2].replace("/",""));
                 }
-                body = body + "\t\"origin\": \"" + InetAddress.getLocalHost().getHostAddress() + "\",\n";
-                body = body + "\t\"url\": \"" + url + "\"\n";
-                body = body + "}\n";
+                body+="\t\"status\": \"" + code + "\"\n";
+                body +="\t\"origin\": \"" + InetAddress.getLocalHost().getHostAddress() + "\",\n";
+                body +="\t\"url\": \"" + url + "\"\n";
+                body +="}\n";
 
                 if(debugFlag)
                     System.out.println(body);

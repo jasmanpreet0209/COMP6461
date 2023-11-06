@@ -14,8 +14,9 @@ To test the file transfer command:-
 httpfs get / http://localhost:8080/get/
 
 httpfs GET /data.txt http://localhost:8080/get/
-
-httpfs POST /postdata.txt http://localhost:8080/post/ -d {Assignment 2 : "Comp 6461"}
+httpfs GET /DoesntExist.txt http://localhost:8080/get/
+httpfs POST /postdata.txt http://localhost:8080/post/ -d {Assignment 2 : "Comp 6461 "}
+httpfs POST /postdata.txt http://localhost:8080/post/ -d {Assignment 2 : "Comp 6461 jasman"}
 
 
 To test the httpc commands:-
