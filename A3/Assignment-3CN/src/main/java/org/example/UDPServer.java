@@ -36,7 +36,6 @@ public class UDPServer {
     static Boolean debugFlag=false,portFlag=false,dirFlag=false;
     public static void main(String[] args) {
 
-
         System.out.println("Enter the command to run the server");
         Scanner sc=new Scanner(System.in);
         String command = sc.nextLine();
@@ -70,6 +69,7 @@ public class UDPServer {
         UDPServer server =new UDPServer();
         Runnable r = () ->{
             try{
+//                System.out.println("Debug runnable");
                 server.runServer();
             }
             catch (Exception e)
@@ -85,6 +85,8 @@ public class UDPServer {
     }
     private void runServer()
     {
+        System.out.println("Debug run server");
+
         try(DatagramChannel channel = DatagramChannel.open())
         {
             channel.bind(new InetSocketAddress(defaultPort));
@@ -103,6 +105,7 @@ public class UDPServer {
                     buff.flip();
                     Packet routerPacket = Packet.fromBuffer(buff);
                     buff.flip();
+                    System.out.println(routerPacket.toString());
                     String reqPayload= new String(routerPacket.getPayload(), StandardCharsets.UTF_8);
 
                     if(reqPayload.equals("Hello Server from Client"))
@@ -189,6 +192,24 @@ public class UDPServer {
                 postInlineData+=payloadArr[i+1].replace("\'","");
                 i++;
             }
+            if(payloadArr[i].equals("-f"))
+            {
+                try {
+                    File dataFile = new File(payloadArr[i+1]);
+                    BufferedReader fileReader = new BufferedReader(new FileReader(dataFile));
+                    String tempFileData;
+                    while ((tempFileData = fileReader.readLine()) != null) {
+                        tempFileData = tempFileData.replaceAll(" ", "~");
+                        postInlineData+=tempFileData+"\n";
+                    }
+                    postInlineData=postInlineData.replaceAll("\"", "");
+                    fileReader.close();
+                } catch (Exception e) {
+                    System.out.println("Enter Correct File");
+                    System.exit(1);
+                }
+                i++;
+            }
 
         }
         URI uri=null;
@@ -200,16 +221,18 @@ public class UDPServer {
             statusCode=URLNotFound;
         }
         if(error==false)
-        { String body = "{\n\t\"args\":{},\n";
+        {
+            String body = "{\n\t\"args\":{},\n";
             body += "\t\"headers\": {\n\t\t\"Connection\": \"close\",\n";
             body +="\t\t\"Host\": \"" + uri.getHost() + "\"\n\t},\n";
             String code="";
             List<String> filesInDir=getFilesFromDir();
             if(reqMethod.equals("get"))
             {
-
+                System.out.println(uri.getPath());
                 if(uri.getPath().equals(""))
                 {
+                    System.out.println("Debug processQuery in get");
                     body +="\t\"files\": { ";
 
                     if(filesInDir.size()==0)
@@ -231,14 +254,14 @@ public class UDPServer {
                 }
                 else {
                     String filename=uri.getPath().substring(1);
-                    File requestedFile =
-                            new File(dirPath+ filename);
-                    String absolutePath = requestedFile.getCanonicalPath().substring(0,
-                            requestedFile.getCanonicalPath().lastIndexOf("/"));
-                    String tempDirectory = dirPath.substring(0,
-                            dirPath.length() - 1);
-                    if (absolutePath.equals(tempDirectory))
-                    {
+//                    File requestedFile =
+//                            new File(dirPath+ filename);
+//                    String absolutePath = requestedFile.getCanonicalPath().substring(0,
+//                            requestedFile.getCanonicalPath().lastIndexOf("/"));
+//                    String tempDirectory = dirPath.substring(0,
+//                            dirPath.length() - 1);
+//                    if (absolutePath.equals(tempDirectory))
+//                    {
                         if (filesInDir.contains(filename)) {
                             File f = new File(dirPath + "/" + filename);
                             String fileContent = getContentFromFile(f);
@@ -247,9 +270,9 @@ public class UDPServer {
                         }
                         else
                             code=FileNotFoundStatusCode;
-                    }
-                    else
-                        code=FileNotFoundStatusCode;
+//                    }
+//                    else
+//                        code=FileNotFoundStatusCode;
 
                 }
             }
@@ -269,28 +292,21 @@ public class UDPServer {
 
                     body=temp+body;
                 }
+
                 String fileContent="";
                 String filename=uri.getPath().substring(1);
-                File requestedFile =
-                        new File(dirPath+ filename);
-                String absolutePath = requestedFile.getCanonicalPath().substring(0,
-                        requestedFile.getCanonicalPath().lastIndexOf("/"));
-                String tempDirectory = dirPath.substring(0,
-                        dirPath.length() - 1);
-                if (absolutePath.equals(tempDirectory))
-                {
-                    if (filesInDir.contains(filename)) {
-                        code = FileOverwrittenStatusCode;
-                    }
-                    else
-                        code=NewFileCreatedStatusCode;
-                    File f = new File(dirPath + "/" + filename);
-                    fileContent = getContentFromFile(f);
-                    body += "\t\"data\": \"" + fileContent + "\",\n";
-                }
-                else
-                    code=FileNotFoundStatusCode;
 
+
+                if (filesInDir.contains(filename)) {
+                    code = FileOverwrittenStatusCode;
+                }
+                else {
+
+                    code = NewFileCreatedStatusCode;
+                }
+
+                File f = new File(dirPath + "/" + filename);
+                body += "\t\"data\": \"" + postInlineData + "\",\n";
 
                 printOutputInFile(postInlineData,filename);
             }
@@ -298,7 +314,6 @@ public class UDPServer {
             body +="\t\"origin\": \"" + InetAddress.getLocalHost().getHostAddress() + "\",\n";
             body +="\t\"url\": \"" + url + "\"\n";
             body +="}\n";
-
             if(debugFlag)
                 System.out.println(body);
             return body;
@@ -340,7 +355,7 @@ public class UDPServer {
         String line=br.readLine();
         while(line!=null)
         {
-            content+=line;
+            content+=line+"\n";
             line=br.readLine();
         }
         br.close();

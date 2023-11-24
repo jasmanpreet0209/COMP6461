@@ -38,7 +38,14 @@ public class UDPClient {
                     System.out.println("You entered command to exit the System! GoodBye");
                     System.exit(0);
                 }
-                url=input.substring(input.indexOf("http://"), input.length() - 1);
+                url=input.substring(input.indexOf("http://"), input.length());
+                String serverHost = new URI(url).getHost();
+                int serverPort = new URI(url).getPort();
+                System.out.println("Debug +serverhost: "+serverHost+"serverport: "+serverPort);
+                SocketAddress routerAddress = new InetSocketAddress(routerhost,routerPort);
+                InetSocketAddress serverAddress = new InetSocketAddress(serverHost, serverPort);
+                handshake(routerAddress, serverAddress);
+                runClient(routerAddress, serverAddress, input);
 
             }while(input.equals("0")==false);
         }
@@ -53,13 +60,14 @@ public class UDPClient {
 
             }
             input = Arrays.toString(args);
+            String serverHost = new URI(url).getHost();
+            int serverPort = new URI(url).getPort();
+            SocketAddress routerAddress = new InetSocketAddress(routerhost,routerPort);
+            InetSocketAddress serverAddress = new InetSocketAddress(serverHost, serverPort);
+            handshake(routerAddress, serverAddress);
+            runClient(routerAddress, serverAddress, input);
         }
-        String serverHost = new URI(url).getHost();
-        int serverPort = new URI(url).getPort();
-        SocketAddress routerAddress = new InetSocketAddress(routerhost,routerPort);
-        InetSocketAddress serverAddress = new InetSocketAddress(serverHost, serverPort);
-        handshake(routerAddress, serverAddress);
-        runClient(routerAddress, serverAddress, input);
+
     }
 
     private static void runClient(SocketAddress routerAddress, InetSocketAddress serverAddress, String input) {
@@ -91,26 +99,26 @@ public class UDPClient {
                 receivedPackets.add(response.getSequenceNumber());
                 System.out.println("\nResponse from Server : \n" + payload);
 
-                String reposnseCode = payload.split("\n")[0].split(" ")[1];
-
-                if (reposnseCode.equals("201")) {
-                    System.out.println("Request succeeded and data  overwritten in file.");
-
-                }
-                if (reposnseCode.equals("202")) {
-                    System.out.println("Request fulfilled and new resource created.");
-
-
-                }
-                if (reposnseCode.equals("203")||reposnseCode.equals("200")) {
-                    System.out.println("Request succeeded.");
-
-                }
-                if (reposnseCode.equals("404")) {
-                    System.out.println("The server couldnt find anything matching the Request url.");
-                    System.out.println(payload);
-                    return;
-                }
+//                String responseCode = payload.split("\n")[0].split(" ")[1];
+//
+//                if (responseCode.equals("201")) {
+//                    System.out.println("Request succeeded and data  overwritten in file.");
+//
+//                }
+//                if (responseCode.equals("202")) {
+//                    System.out.println("Request fulfilled and new resource created.");
+//
+//
+//                }
+//                if (responseCode.equals("203")||responseCode.equals("200")) {
+//                    System.out.println("Request succeeded.");
+//
+//                }
+//                if (responseCode.equals("404")) {
+//                    System.out.println("The server couldnt find anything matching the Request url.");
+//                    System.out.println(payload);
+//                    return;
+//                }
             }
             seqNum++;
             Packet AckPacket = new Packet.Builder().setType(0).setSequenceNumber(seqNum).setPortNumber(serverAddress.getPort()).setPeerAddress(serverAddress.getAddress())
@@ -171,7 +179,7 @@ public class UDPClient {
             ByteBuffer buff = ByteBuffer.allocate(Packet.MAX_LEN);
             Packet response = Packet.fromBuffer(buff);
             String routerPayload = new String(response.getPayload());
-            System.out.println("\n ---RECEIVED---!!" + routerPayload);
+            System.out.println("\n ---RECEIVED---!!");
             receivedPackets.add(response.getSequenceNumber());
             keys.clear();
 

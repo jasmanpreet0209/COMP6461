@@ -1,0 +1,16 @@
+httpfs get -v http://localhost:8080
+httpfs get -v http://localhost:8080/data.txt
+
+httpfs get -h Content-Type:text/json http://localhost:8080
+httpfs get -h Content-Type:text/txt http://localhost:8080
+httpfs get -v http://localhost:8080/Data/abc.txt
+httpfs get -v http://localhost:8080/../test.txt
+
+httpfs post -v -d {A3:40231120} http://localhost:8080/testt.txt
+httpfs post -d {'Jasmanpreet':'40231120'} -h overwrite:false http://localhost:8080/test.txt
+httpfs post -v -f data.txt http://localhost:8080/xyz.txt
+
+httpfs post -v -f demo.json http://localhost:8080/xyz.txt
+
+httpfs post -v -h overwrite:true -f data.txt http://localhost:8080/test2.txt
+httpfs post -v -h overwrite:true -f demo.json http://localhost:8080/Test/Smit.txt
