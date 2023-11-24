@@ -357,8 +357,12 @@ public class Server {
             }
             else if (commandArr[i].equals("-d"))
             {
+                //security
                 dirFlag=true;
-                dirPath+="/"+commandArr[i+1];
+                if(commandArr[i+1].contains(dirPath))
+                    dirPath=commandArr[i+1];
+                else
+                    dirPath+="/"+commandArr[i+1];
                 i++;
             }
         }
