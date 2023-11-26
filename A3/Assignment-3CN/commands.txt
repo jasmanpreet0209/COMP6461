@@ -1,9 +1,9 @@
 cd /Users/jasman/Desktop/Concordia/CN/LabAssignments/COMP6461/A3/router/source
 
-./router --port=3333 --drop-rate=0.0 --max-delay=0ms --seed=1
-./router --port=3333 --drop-rate=0.3 --max-delay=10ms --seed=1
-./router --port=3333 --drop-rate=0.2
-./router --port=3333 --max-delay=10ms
+./router --port=3000 --drop-rate=0.0 --max-delay=0ms --seed=1
+./router --port=3000 --drop-rate=0.3 --max-delay=10ms --seed=1
+./router --port=3000 --drop-rate=0.2
+./router --port=3000 --max-delay=10ms
 
 httpfs get -v http://localhost:8080
 httpfs get -v http://localhost:8080/../abc/data.txt

@@ -19,3 +19,25 @@
 20:32:50.591227 [queue=0] packet #3, 127.0.0.1:8080 -> 127.0.0.1:51999, sz=237 is delivered
 20:32:50.591481 [queue=1] packet #4, 127.0.0.1:51999 -> 127.0.0.1:8080, sz=2 is delayed for 3.7ms
 20:32:50.595786 [queue=0] packet #4, 127.0.0.1:51999 -> 127.0.0.1:8080, sz=2 is delivered
+20:36:06.040407 config: drop-rate=0.20, max-delay=0s, seed=1700962566040297000
+20:36:06.041884 router is listening at :3333
+20:36:49.449918 config: drop-rate=0.00, max-delay=0s, seed=1
+20:36:49.450882 router is listening at :3000
+20:36:51.643362 [queue=0] packet #1, 127.0.0.1:54680 -> 127.0.0.1:8080, sz=24 is delivered
+20:36:51.655478 [queue=0] packet #1, 127.0.0.1:8080 -> 127.0.0.1:54680, sz=24 is delivered
+20:36:51.657198 [queue=0] packet #2, 127.0.0.1:65368 -> 127.0.0.1:8080, sz=35 is delivered
+20:36:51.888330 [queue=0] packet #2, 127.0.0.1:8080 -> 127.0.0.1:65368, sz=237 is delivered
+20:36:51.889690 [queue=0] packet #3, 127.0.0.1:65368 -> 127.0.0.1:8080, sz=35 is delivered
+20:36:51.890359 [queue=0] packet #3, 127.0.0.1:8080 -> 127.0.0.1:65368, sz=237 is delivered
+20:36:51.890525 [queue=0] packet #4, 127.0.0.1:65368 -> 127.0.0.1:8080, sz=2 is delivered
+20:37:00.917792 config: drop-rate=0.00, max-delay=0s, seed=1
+20:37:00.919683 router is listening at :3000
+20:37:13.388140 config: drop-rate=0.20, max-delay=0s, seed=1700962633388020000
+20:37:13.388705 router is listening at :3000
+20:37:15.965102 [queue=0] packet #5, 127.0.0.1:53790 -> 127.0.0.1:8080, sz=24 is dropped
+20:37:18.967283 [queue=0] packet #5, 127.0.0.1:53790 -> 127.0.0.1:8080, sz=24 is delivered
+20:37:18.969735 [queue=0] packet #5, 127.0.0.1:8080 -> 127.0.0.1:53790, sz=24 is delivered
+20:37:18.970655 [queue=0] packet #6, 127.0.0.1:64820 -> 127.0.0.1:8080, sz=35 is delivered
+20:37:18.976429 [queue=0] packet #6, 127.0.0.1:8080 -> 127.0.0.1:64820, sz=237 is delivered
+20:37:18.977320 [queue=0] packet #7, 127.0.0.1:64820 -> 127.0.0.1:8080, sz=35 is dropped
+20:37:21.980160 [queue=0] packet #6, 127.0.0.1:64820 -> 127.0.0.1:8080, sz=35 is dropped
