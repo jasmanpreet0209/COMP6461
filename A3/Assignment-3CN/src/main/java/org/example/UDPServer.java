@@ -28,6 +28,7 @@ public class UDPServer {
 
     static String NewFileCreatedStatusCode = "HTTP/1.1 " +
             "202 NEW FILE CREATED";
+    static String UnauthorizedAccessStatusCode = "UNAUTHORIZED ACCESS TO THE REQUESTED DIRECTORY.";
     static String NoFilesInDir = "HTTP/1.1 " +
             "203 NO FILES FOUND IN DIRECTORY";
     static String ConnectionAlive = "Connection: keep-alive";
@@ -254,15 +255,21 @@ public class UDPServer {
                 }
                 else {
                     String filename=uri.getPath().substring(1);
-//                    File requestedFile =
-//                            new File(dirPath+ filename);
-//                    String absolutePath = requestedFile.getCanonicalPath().substring(0,
-//                            requestedFile.getCanonicalPath().lastIndexOf("/"));
-//                    String tempDirectory = dirPath.substring(0,
-//                            dirPath.length() - 1);
-//                    if (absolutePath.equals(tempDirectory))
-//                    {
-                        if (filesInDir.contains(filename)) {
+                    File requestedFile=null;
+                    if(dirPath.endsWith("/"))
+                        requestedFile = new File(dirPath+ filename);
+                    else
+                        requestedFile = new File(dirPath+"/"+filename);
+                    String absolutePath = requestedFile.getCanonicalPath().substring(0,
+                            requestedFile.getCanonicalPath().lastIndexOf("/"));
+                    String tempDirectory = dirPath.substring(0,
+                            dirPath.length() - 1);
+                    System.out.println("abs: "+ absolutePath+" dir: "+dirPath + absolutePath.toLowerCase().contains(tempDirectory.toLowerCase()));
+                    if (absolutePath.equals(tempDirectory) || absolutePath.contains(tempDirectory))
+                    {
+                        List<String> filesInDir2 =getFilesFromDir(absolutePath);
+                        System.out.println(filesInDir2+" "+filename);
+                        if (filesInDir2.contains(filename.split("/")[filename.split("/").length-1])) {
                             File f = new File(dirPath + "/" + filename);
                             String fileContent = getContentFromFile(f);
                             body += "\t\"data\": \"" + fileContent + "\",\n";
@@ -270,40 +277,56 @@ public class UDPServer {
                         }
                         else
                             code=FileNotFoundStatusCode;
-//                    }
-//                    else
-//                        code=FileNotFoundStatusCode;
+                    }
+                    else
+                        code=UnauthorizedAccessStatusCode;
 
                 }
             }
-            else if(reqMethod.equals("post"))
-            {
-                String temp="";
-                if(debugFlag)
-                {
-                    temp+=OkStatusCode+"\n";
-                    temp+=Date + Calendar.getInstance().getTime() + "\n";
-                    temp+="Content-Type: application/json\n";
-                    temp+="Content-Length: "+ body.length() +"\n";
-                    temp+="Connection: close\n";
-                    temp+="Server: Localhost\n";
-                    temp+=AccessControlAllowOrigin+"\n";
-                    temp+=AccessControlAllowCredentials+"\n";
+            else if(reqMethod.equals("post")) {
+                String temp = "";
+                if (debugFlag) {
+                    temp += OkStatusCode + "\n";
+                    temp += Date + Calendar.getInstance().getTime() + "\n";
+                    temp += "Content-Type: application/json\n";
+                    temp += "Content-Length: " + body.length() + "\n";
+                    temp += "Connection: close\n";
+                    temp += "Server: Localhost\n";
+                    temp += AccessControlAllowOrigin + "\n";
+                    temp += AccessControlAllowCredentials + "\n";
 
-                    body=temp+body;
+                    body = temp + body;
                 }
 
-                String fileContent="";
-                String filename=uri.getPath().substring(1);
+                String fileContent = "";
 
+                String filename = uri.getPath().substring(1);
 
-                if (filesInDir.contains(filename)) {
-                    code = FileOverwrittenStatusCode;
+                filename=uri.getPath().substring(1);
+                File requestedFile=null;
+                if(dirPath.endsWith("/"))
+                    requestedFile = new File(dirPath+ filename);
+                else
+                    requestedFile = new File(dirPath+"/"+filename);
+                String absolutePath = requestedFile.getCanonicalPath().substring(0,
+                        requestedFile.getCanonicalPath().lastIndexOf("/"));
+                String tempDirectory = dirPath.substring(0,
+                        dirPath.length() - 1);
+                System.out.println("abs: "+ absolutePath+" dir: "+dirPath + absolutePath.toLowerCase().contains(tempDirectory.toLowerCase()));
+                if (absolutePath.equals(tempDirectory) || absolutePath.contains(tempDirectory)) {
+                    List<String> filesInDir2 = getFilesFromDir(absolutePath);
+                    System.out.println(filesInDir2 + " " + filename);
+                    if (filesInDir2.contains(filename.split("/")[filename.split("/").length - 1])) {
+                        if (filesInDir.contains(filename)) {
+                            code = FileOverwrittenStatusCode;
+                        } else {
+
+                            code = NewFileCreatedStatusCode;
+                        }
+                    }
                 }
-                else {
-
-                    code = NewFileCreatedStatusCode;
-                }
+                else
+                    code = UnauthorizedAccessStatusCode;
 
                 File f = new File(dirPath + "/" + filename);
                 body += "\t\"data\": \"" + postInlineData + "\",\n";
@@ -328,6 +351,16 @@ public class UDPServer {
 
 
 }
+    private List<String> getFilesFromDir(String path) {
+        List<String> filelist = new ArrayList<>();
+        File currentDir=new File(path);
+        for (File file : currentDir.listFiles()) {
+            if (!file.isDirectory()) {
+                filelist.add(file.getName());
+            }
+        }
+        return filelist;
+    }
 
     private List<String> getFilesFromDir() {
         List<String> filelist = new ArrayList<>();
