@@ -1,0 +1,23 @@
+cd /Users/jasman/Desktop/Concordia/CN/LabAssignments/COMP6461/A3/router/source
+
+./router --port=3000 --drop-rate=0.0 --max-delay=0ms
+./router --port=3000 --drop-rate=0.3 --max-delay=10ms
+./router --port=3000 --drop-rate=0.7
+./router --port=3000 --max-delay=20ms
+
+httpfs get -v http://localhost:8080
+httpfs get -v http://localhost:8080/../abc/data.txt
+
+
+httpfs get -v http://localhost:8080/data/abc.txt
+httpfs get -v http://localhost:8080/data.txt
+httpfs get -v http://localhost:8080/../test.txt
+
+httpfs post -v -d {A3:40231120} http://localhost:8080/testt.txt
+httpfs post -v -d {A3:40231120} http://localhost:8080/../testt.txt
+
+httpfs post -d {'Jasmanpreet':'40231120'} http://localhost:8080/test.txt
+httpfs post -v -f data.txt http://localhost:8080/../xyz.txt
+httpfs post -v -f data.txt http://localhost:8080/xyz.txt
+
+httpfs post -v -f demo.json http://localhost:8080/xyz.txt
